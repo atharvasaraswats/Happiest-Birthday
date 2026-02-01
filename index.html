@@ -3,25 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <title>Happy Birthday 💖</title>
+
+  <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;600&display=swap" rel="stylesheet">
 
   <style>
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       margin: 0;
-      height: 100vh;
+      min-height: 100vh;
       background: linear-gradient(135deg, #ff9ad5, #ffd1ec);
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       font-family: 'Poppins', sans-serif;
-      overflow: hidden;
+      overflow-x: hidden;
     }
 
-    /* Main card */
+    /* Main birthday card */
     .card {
-      background: rgba(255, 255, 255, 0.85);
+      background: rgba(255, 255, 255, 0.9);
       border-radius: 25px;
       padding: 40px;
       text-align: center;
@@ -50,6 +55,42 @@
       color: #ff2f92;
     }
 
+    /* Wishes section */
+    .wishes-container {
+      margin-top: 40px;
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+      max-width: 1000px;
+      padding: 0 20px 40px;
+    }
+
+    .wish-box {
+      width: 220px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 18px;
+      padding: 15px;
+      box-shadow: 0 10px 30px rgba(255, 47, 146, 0.3);
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.6s ease;
+      font-size: 0.95rem;
+    }
+
+    .wish-box.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .wish-from {
+      margin-top: 8px;
+      font-weight: 600;
+      color: #ff2f92;
+      text-align: right;
+      font-size: 0.85rem;
+    }
+
     /* Floating hearts */
     .heart {
       position: absolute;
@@ -69,48 +110,27 @@
       0% { transform: scale(0.6); opacity: 0; }
       100% { transform: scale(1); opacity: 1; }
     }
-
-    /* Floating wish boxes */
-    .wish-box {
-      position: absolute;
-      width: 220px;
-      background: rgba(255,255,255,0.9);
-      border-radius: 18px;
-      padding: 15px;
-      box-shadow: 0 10px 30px rgba(255, 47, 146, 0.3);
-      animation: drift 18s linear infinite;
-      font-size: 0.95rem;
-    }
-
-    .wish-from {
-      margin-top: 8px;
-      font-weight: 600;
-      color: #ff2f92;
-      text-align: right;
-      font-size: 0.85rem;
-    }
-
-    @keyframes drift {
-      from { transform: translateY(110vh); }
-      to { transform: translateY(-120vh); }
-    }
   </style>
 </head>
 
 <body>
 
+  <!-- Main card -->
   <div class="card">
     <h1>Happy Birthday 💕</h1>
     <p>
-      Today the world got upgraded ✨  
+      Today the world got upgraded ✨<br>
       More smiles, more chaos, more YOU.
     </p>
     <p>
-      Stay cute. Stay powerful.  
+      Stay cute. Stay powerful.<br>
       Stay dangerously adorable 😌💖
     </p>
     <div class="from">— from me 💌</div>
   </div>
+
+  <!-- Wishes -->
+  <div class="wishes-container" id="wishes"></div>
 
   <script>
     /* Floating hearts */
@@ -128,30 +148,31 @@
 
     /* Load wishes from text files */
     const wishFiles = [
-      "wishes/wish1.txt",
-      "wishes/wish2.txt",
-      "wishes/wish3.txt",
-      "wishes/wish4.txt",
-      "wishes/wish5.txt"
+      "wishes/wish1.txt"
     ];
+
+    const container = document.getElementById("wishes");
 
     wishFiles.forEach((file, index) => {
       fetch(file)
         .then(res => res.text())
         .then(data => {
-          const [message, from] = data.split("\n---\n");
+          const parts = data.split("\n---\n");
+          const message = parts[0] || "";
+          const from = parts[1] || "";
 
           const box = document.createElement("div");
           box.className = "wish-box";
-          box.style.left = (10 + index * 18) + "vw";
-          box.style.animationDuration = (16 + Math.random() * 8) + "s";
-
           box.innerHTML = `
             <div>${message}</div>
             <div class="wish-from">— ${from}</div>
           `;
 
-          document.body.appendChild(box);
+          container.appendChild(box);
+
+          setTimeout(() => {
+            box.classList.add("show");
+          }, index * 1200);
         });
     });
   </script>
